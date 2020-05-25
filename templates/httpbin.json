@@ -1,0 +1,13 @@
+[
+  {
+    "name": "httpbin",
+    "image": "ericdahl/httpbin:e249975",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 8080
+      }
+    ]
+  }
+]
