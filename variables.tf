@@ -7,6 +7,10 @@ variable "vpc_id" {
   type = string
 }
 
-variable "httpbin_subnets" {
+variable "httpbin_task_subnets" {
+  type = list(string)
+}
+
+variable "httpbin_alb_subnets" {
   type = list(string)
 }
