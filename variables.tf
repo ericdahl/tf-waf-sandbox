@@ -1,5 +1,5 @@
 variable "admin_cidrs" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 

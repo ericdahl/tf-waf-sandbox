@@ -8,6 +8,14 @@
         "containerPort": 8080,
         "hostPort": 8080
       }
-    ]
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "tf-waf-sandbox",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "httpbin"
+      }
+    }
   }
 ]
