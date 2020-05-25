@@ -10,7 +10,7 @@ resource "aws_ecs_cluster" "cluster" {
 
 resource "aws_ecs_service" "httpbin" {
   name            = "httpbin"
-  task_definition = aws_ecs_task_definition.httpbin.id
+  task_definition = "${aws_ecs_task_definition.httpbin.id}:${aws_ecs_task_definition.httpbin.revision}"
   desired_count   = 1
 
   cluster = aws_ecs_cluster.cluster.name
@@ -31,7 +31,8 @@ resource "aws_ecs_service" "httpbin" {
 
   health_check_grace_period_seconds = 100000
 
-  depends_on = [aws_iam_role.httpbin_execution,
+  depends_on = [
+    aws_iam_role.httpbin_execution,
     aws_alb.httpbin,
     aws_cloudwatch_log_group.httpbin
   ]
@@ -66,7 +67,6 @@ resource "aws_iam_role" "httpbin_execution" {
       "Sid": "",
       "Effect": "Allow",
       "Principal": {
-        "Service": "ecs-tasks.amazonaws.com",
         "Service": "ecs.amazonaws.com"
       },
       "Action": "sts:AssumeRole"
