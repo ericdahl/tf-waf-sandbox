@@ -2,4 +2,5 @@
 
 
 ## TODO
+- [ ] test out various waf rules
 - [ ] fix execution role trusted entity
