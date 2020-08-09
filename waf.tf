@@ -1,45 +1,48 @@
-resource "aws_wafregional_ipset" "httpbin" {
-  name = "httpbin"
-
-  ip_set_descriptor {
-    type  = "IPV4"
-    value = "192.0.7.0/24"
-  }
-}
-
-resource "aws_wafregional_rule" "httpbin" {
-  name        = "httpbin"
-  metric_name = "httpbin"
-
-  predicate {
-    data_id = aws_wafregional_ipset.httpbin.id
-    negated = false
-    type    = "IPMatch"
-  }
-}
-
-resource "aws_wafregional_web_acl" "httpbin" {
-  name        = "httpbin"
-  metric_name = "httpbin"
+resource "aws_wafv2_web_acl" "httpbin" {
+  name = "tf_waf_sandbox"
+  scope = "REGIONAL"
 
   default_action {
-    type = "ALLOW"
+    allow {}
+  }
+
+  visibility_config {
+    cloudwatch_metrics_enabled = false
+    metric_name = "tf_waf_sandbox"
+    sampled_requests_enabled = true
   }
 
   rule {
-    action {
-      type = "BLOCK"
+    name     = "AWS-AWSManagedRulesCommonRuleSet"
+    priority = 1
+
+    override_action {
+      count {}
     }
 
-    priority = 1
-    rule_id  = aws_wafregional_rule.httpbin.id
-    type     = "REGULAR"
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesCommonRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = false
+      metric_name                = "friendly-rule-metric-name"
+      sampled_requests_enabled   = true
+    }
   }
+
+  tags = {
+    Tag1 = "Value1"
+    Tag2 = "Value2"
+  }
+
+
 }
 
-
-resource "aws_wafregional_web_acl_association" "httpbin" {
+resource "aws_wafv2_web_acl_association" "httpbin" {
   resource_arn = aws_alb.httpbin.arn
-  web_acl_id = aws_wafregional_web_acl.httpbin.id
+  web_acl_arn = aws_wafv2_web_acl.httpbin.arn
 }
-

@@ -5,12 +5,11 @@ provider "aws" {
 
 resource "aws_ecs_cluster" "cluster" {
   name = "tf-waf-sandbox"
-
 }
 
 resource "aws_ecs_service" "httpbin" {
   name            = "httpbin"
-  task_definition = "${aws_ecs_task_definition.httpbin.id}:${aws_ecs_task_definition.httpbin.revision}"
+  task_definition = aws_ecs_task_definition.httpbin.arn
   desired_count   = 1
 
   cluster = aws_ecs_cluster.cluster.name
@@ -67,7 +66,7 @@ resource "aws_iam_role" "httpbin_execution" {
       "Sid": "",
       "Effect": "Allow",
       "Principal": {
-        "Service": "ecs.amazonaws.com"
+        "Service": "ecs-tasks.amazonaws.com"
       },
       "Action": "sts:AssumeRole"
     }
@@ -164,6 +163,8 @@ resource "aws_alb" "httpbin" {
   subnets = var.httpbin_alb_subnets
 
   security_groups = [aws_security_group.httpbin_alb.id]
+
+
 }
 
 resource "aws_alb_listener" "httpbin" {
